@@ -1,0 +1,250 @@
+import { useEffect, useRef, useState } from 'react'
+import { ScrollArea } from "./ui/scroll-area";
+// import styles from './TypingIndicator.module.css';
+
+import paperclipIcon from "@iconify/icons-lucide/paperclip";
+import sendHorizonalIcon from "@iconify/icons-lucide/send-horizonal";
+
+// import ReactMarkdown from 'react-markdown';
+
+import Icon from "../daisyui/components/Icon";
+import {
+  Button,
+  Input,
+  ChatBubble,
+  ChatBubbleAvatar,
+  ChatBubbleMessage,
+  ChatBubbleTime,
+} from "../daisyui/daisyui";
+import DateUtil from "../daisyui/helpers/utils/date";
+import { cn } from "../daisyui/helpers/utils/cn";
+import avatar1 from "../daisyui/1.png"
+
+// const REACT_APP_WS_URL = process.env.REACT_APP_WS_URL;
+
+const hashtest = "hash13"
+
+const dummyMessages = [
+  {
+    text: "Hi there! Can you help me with my account?",
+    isBot: false,
+    from_me: true // Assuming 'from_me' means the message is from the user
+  },
+  {
+    text: "Sure, I'd be happy to help! What seems to be the problem?",
+    isBot: true,
+    from_me: false
+  },
+  {
+    text: "I'm having trouble logging in.",
+    isBot: false,
+    from_me: true
+  },
+  {
+    text: "...", // Placeholder text while the bot "thinks" or fetches data
+    isBot: true,
+    from_me: false,
+    typing: true // If you handle typing indicators
+  },
+  {
+    text: "I've checked your account and it seems you need to reset your password. Would you like me to send you a reset link?",
+    isBot: true,
+    from_me: false
+  }
+];
+
+const SingleMessage = ({ message }) => {
+  return (
+    <div>
+      <ChatBubble end={!message.isBot} >
+        <ChatBubbleAvatar
+          alt={"U"}
+          src={!message.isBot ? avatar1 : avatar1}
+          innerClassName={"bg-base-content/10 rounded-box p-0.5"}
+          shape={"square"}
+        />
+        <ChatBubbleMessage
+        className={cn("min-h-fit py-3 text-base/none", {
+          "bg-base-content/5 text-base-content": message.from_me,
+          "bg-base-content/10 text-base-content": !message.from_me,
+          "whitespace-pre-wrap": true,
+          })}
+        >
+          {/* <ReactMarkdown> */}
+              {message.text}
+          {/* </ReactMarkdown> */}
+        </ChatBubbleMessage>
+        <ChatBubbleTime>
+          {/* {DateUtil.formatted(message.send_at, { format: "hh:mm A" })} */}
+          time
+        </ChatBubbleTime>
+      </ChatBubble>
+    </div>
+  );
+};
+
+async function generateThreadId(inputs) {
+  const encoder = new TextEncoder();
+  const dataString = inputs.join('');
+  const data = encoder.encode(dataString);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer)); // Convert buffer to byte array
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join(''); // Convert bytes to hex string
+  return hashHex;
+}
+
+const Chat = () => {
+    // const [messages, setMessages] = useState([]);
+    const [input, setInput] = useState('');
+
+    const ws = useRef(null);
+
+    // useEffect(() => {
+    //     console.log("websocket initiated")
+
+    //     console.log(`${REACT_APP_WS_URL}/ws/chat/`)
+    //     try{
+    //     ws.current = new WebSocket(`${REACT_APP_WS_URL}/ws/chat/`);
+    //     } catch (error) {
+    //     }
+
+    //     ws.current.onopen = async () => {
+    //     const threadId = await generateThreadId([hashtest]);
+    //     const initData = { type: "init", thread_id: threadId }
+    //     ws.current.send(JSON.stringify(initData))
+    //       }
+
+    //     let accumulatedAnswer = ''
+    //     let message_count = 0
+        
+    //     ws.current.onmessage =(event) => {
+    //       const data = JSON.parse(event.data);
+
+    //       if (data) {
+    //         switch (data.kind) {
+    //           case 'on_chat_model_init':
+    //             setMessages(data.content)
+    //             break;
+    //           case 'on_chat_model_start':
+    //             accumulatedAnswer = ''
+    //             message_count = 0
+    //             break;
+    //           case 'on_chat_model_stream':
+    //             message_count += 1
+    //             if (message_count === 1) {
+    //                 const botMessage = { text: '', isBot: true, pages: [] };
+    //                 setMessages(prevMessages => {
+    //                   if (prevMessages.length > 0) {
+    //                       const newMessages = prevMessages.slice(0, prevMessages.length - 1);
+    //                       return [...newMessages, botMessage];
+    //                   } else {
+    //                       return [botMessage];
+    //                   }
+    //                 });
+    //             }
+    //             accumulatedAnswer += data.content;
+    //             setMessages(
+    //                 prevMessages  => {
+    //                 const newMessages = [...prevMessages ];
+    //                 newMessages[newMessages.length - 1] = { ...newMessages[newMessages.length - 1], text: accumulatedAnswer };
+    //                 return newMessages;
+    //               }
+    //             )
+    //             break;
+    //           case 'on_chat_model_end':
+    //             break;
+    //           default:
+    //             console.log('Received unknown message kind:', data.kind);
+    //             break;
+    //         }
+    //       } else {
+    //         console.error('Message format incorrect or missing content:', data);
+    //       }
+    //     };
+
+    //     return () => {
+    //         ws.current.close();
+    //     };
+    // }, []);
+
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        // if (!input.trim()) return;
+        
+        // const userMessage = { text: input, isBot: false };
+        // setMessages([...messages, userMessage]);
+
+        // const botMessage = { text: '...', isBot: true, pages: [], typing: true };
+        // setMessages(prevMessages => [...prevMessages, botMessage]);
+        
+        // generateThreadId([hashtest]).then(threadId => {
+        //     ws.current.send(JSON.stringify({ content: input, thread_id: threadId }));
+        // });
+        setInput('');
+    };
+
+
+    const viewportref = useRef(null);
+
+    // useEffect(() => {
+    //   if (viewportref !== null && viewportref.current !== null) {
+    //     viewportref.current.scrollTo(0, viewportref.current.scrollHeight);
+    //       }
+    // }, [messages])
+
+
+    return (
+          <div data-theme="dark" className='mx-auto flex flex-col flex-grow w-full h-full'>
+          <ScrollArea 
+            className="pl-5 pr-5 pb-5 overflow-auto w-full h-full"
+            // style={{ height: "calc(100vh)" }}
+
+            viewportref={viewportref}
+
+          >
+            {dummyMessages.map((message, index) => (
+              <SingleMessage message={message} key={index} />
+            ))}
+          </ScrollArea>
+
+          <form onSubmit={handleSubmit} className='relative'>
+            <div  className="flex gap-3 bg-base-content/5 p-4"> 
+            <Button
+              color={"ghost"}
+              size={"sm"}
+              shape={"circle"}
+              aria-label="Attachment"
+            >
+              <Icon
+                icon={paperclipIcon}
+                fontSize={18}
+                className="text-base-content/80"
+              />
+            </Button>
+            <div className="grow">
+              <Input
+                size={"sm"}
+                className="w-full"
+                aria-label="Input message"
+                name='message'
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+              />
+            </div>
+            <Button
+              color={"primary"}
+              size={"sm"}
+              shape={"circle"}
+              aria-label="Send message"
+              type='submit'
+            >
+              <Icon icon={sendHorizonalIcon} fontSize={18} />
+            </Button>
+          </div>
+          </form>
+          </div>
+    );
+}
+
+export default Chat;
