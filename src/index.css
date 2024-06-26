@@ -20,6 +20,7 @@ body {
 .card .chat-container {
   max-height: calc(85vh - 112px);
   overflow-y: auto;
+  scrollbar-color: #aaa #f9f9f9;
 }
 /* Card code ends */
 
