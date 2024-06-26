@@ -3,6 +3,8 @@ import { ScrollArea } from "./ui/scroll-area";
 // import styles from './TypingIndicator.module.css';
 
 import paperclipIcon from "@iconify/icons-lucide/paperclip";
+import thumbsupIcon from "@iconify/icons-lucide/thumbs-up";
+import thumbsdownIcon from "@iconify/icons-lucide/thumbs-down";
 import sendHorizonalIcon from "@iconify/icons-lucide/send-horizonal";
 
 // import ReactMarkdown from 'react-markdown';
@@ -41,12 +43,6 @@ const dummyMessages = [
     from_me: true,
   },
   {
-    text: "...", // Placeholder text while the bot "thinks" or fetches data
-    isBot: true,
-    from_me: false,
-    typing: true, // If you handle typing indicators
-  },
-  {
     text: "I've checked your account and it seems you need to reset your password. Would you like me to send you a reset link?",
     isBot: true,
     from_me: false,
@@ -63,6 +59,10 @@ const SingleMessage = ({ message }) => {
           innerClassName={"bg-base-content/10 rounded-box p-0.5"}
           shape={"square"}
         />
+        <ChatBubbleTime>
+          {/* {DateUtil.formatted(message.send_at, { format: "hh:mm A" })} */}
+          10:34 AM
+        </ChatBubbleTime>
         <ChatBubbleMessage
           className={cn("min-h-fit py-3 text-base/none", {
             "bg-base-content/5 text-base-content": message.from_me,
@@ -74,10 +74,6 @@ const SingleMessage = ({ message }) => {
           {message.text}
           {/* </ReactMarkdown> */}
         </ChatBubbleMessage>
-        <ChatBubbleTime>
-          {/* {DateUtil.formatted(message.send_at, { format: "hh:mm A" })} */}
-          time
-        </ChatBubbleTime>
       </ChatBubble>
     </div>
   );
@@ -200,9 +196,9 @@ const Chat = () => {
     // >
     <div className="card h-full">
       <div className="card-body p-0">
-        <div className="bg-primary card-actions justify-between content-center px-4 py-3 text-white">
-          <span className="text-xl">Chat</span>
-          <button className="btn btn-square btn-ghost btn-sm">
+        <div className="bg-primary card-actions justify-between content-center px-4 py-2 text-white">
+          <span className="text-lg">Chat</span>
+          <button className="btn btn-square btn-ghost btn-sm close">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-6 w-6"
@@ -219,31 +215,67 @@ const Chat = () => {
             </svg>
           </button>
         </div>
-        <div className="text-center my-4">
-          <div className="avatar">
-            <div className="w-16 rounded-full">
-              <img
-                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
-                alt="Tailwind-CSS-Avatar-component"
-              />
+        <div className="chat-container">
+          <div className="text-center my-4">
+            <div className="avatar">
+              <div className="w-16 rounded-full">
+                <img
+                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+                  alt="Tailwind-CSS-Avatar-component"
+                />
+              </div>
             </div>
+            <p className="text-md font-medium">Name</p>
+            <p className="text-sm text-gray-500">Hi, how may I help you</p>
           </div>
-          <p className="text-md font-medium">Name</p>
-          <p className="text-sm text-gray-500">Hi, how may I help you.</p>
-        </div>
-        <ScrollArea
-          className="pl-5 pr-5 pb-5 overflow-auto w-full h-full"
-          // style={{ height: "calc(100vh)" }}
+          <ScrollArea
+            className="pl-5 pr-5 pb-5 overflow-auto w-full"
+            // style={{ height: "calc(100vh)" }}
 
-          viewportref={viewportref}
+            viewportref={viewportref}
+          >
+            {dummyMessages.map((message, index) => (
+              <SingleMessage message={message} key={index} />
+            ))}
+            <div className="flex gap-1 pl-1">
+              <span className="text-xs pt-2 text-gray-500">
+                Was this helpful?
+              </span>
+              <div>
+                <Button
+                  color={"ghost"}
+                  size={"sm"}
+                  shape={"circle"}
+                  aria-label="Attachment"
+                >
+                  <Icon
+                    icon={thumbsupIcon}
+                    fontSize={18}
+                    className="text-base-content/80"
+                  />
+                </Button>
+                <Button
+                  color={"ghost"}
+                  size={"sm"}
+                  shape={"circle"}
+                  aria-label="Attachment"
+                >
+                  <Icon
+                    icon={thumbsdownIcon}
+                    fontSize={18}
+                    className="text-base-content/80"
+                  />
+                </Button>
+              </div>
+            </div>
+          </ScrollArea>
+        </div>
+        <form
+          onSubmit={handleSubmit}
+          className="absolute left-0 bottom-0 w-full"
         >
-          {dummyMessages.map((message, index) => (
-            <SingleMessage message={message} key={index} />
-          ))}
-        </ScrollArea>
-        <form onSubmit={handleSubmit} className="relative">
-          <div className="flex gap-3 bg-base-content/5 p-4">
-            <Button
+          <div className="flex chat-input-outer gap-2 bg-base-content/5 px-4 py-2">
+            {/* <Button
               color={"ghost"}
               size={"sm"}
               shape={"circle"}
@@ -254,15 +286,16 @@ const Chat = () => {
                 fontSize={18}
                 className="text-base-content/80"
               />
-            </Button>
+            </Button> */}
             <div className="grow">
               <Input
                 size={"sm"}
-                className="w-full"
+                className="chat-input"
                 aria-label="Input message"
                 name="message"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
+                placeholder="Message"
               />
             </div>
             <Button
