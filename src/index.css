@@ -24,6 +24,10 @@ body {
 /* Card code ends */
 
 /* Chat code starts */
+.chat-close {
+  z-index: 1;
+  cursor: pointer;
+}
 .chat-outer {
   width: 375px;
   height: 85vh;

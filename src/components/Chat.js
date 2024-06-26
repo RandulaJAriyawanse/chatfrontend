@@ -5,6 +5,7 @@ import { ScrollArea } from "./ui/scroll-area";
 import paperclipIcon from "@iconify/icons-lucide/paperclip";
 import thumbsupIcon from "@iconify/icons-lucide/thumbs-up";
 import thumbsdownIcon from "@iconify/icons-lucide/thumbs-down";
+import xIcon from "@iconify/icons-lucide/x";
 import sendHorizonalIcon from "@iconify/icons-lucide/send-horizonal";
 
 // import ReactMarkdown from 'react-markdown';
@@ -194,25 +195,13 @@ const Chat = () => {
     //   data-theme="light"
     //   className="mx-auto flex flex-col flex-grow w-full h-full"
     // >
+
     <div className="card h-full">
       <div className="card-body p-0">
         <div className="bg-primary card-actions justify-between content-center px-4 py-2 text-white">
           <span className="text-lg">Chat</span>
-          <button className="btn btn-square btn-ghost btn-sm close">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+          <button className="btn btn-square btn-ghost btn-sm close-chat">
+            <Icon icon={xIcon} fontSize={24} className="text-white" />
           </button>
         </div>
         <div className="chat-container">
@@ -248,11 +237,7 @@ const Chat = () => {
                   shape={"circle"}
                   aria-label="Attachment"
                 >
-                  <Icon
-                    icon={thumbsupIcon}
-                    fontSize={18}
-                    className="text-base-content/80"
-                  />
+                  <Icon icon={thumbsupIcon} fontSize={18} />
                 </Button>
                 <Button
                   color={"ghost"}
@@ -260,11 +245,7 @@ const Chat = () => {
                   shape={"circle"}
                   aria-label="Attachment"
                 >
-                  <Icon
-                    icon={thumbsdownIcon}
-                    fontSize={18}
-                    className="text-base-content/80"
-                  />
+                  <Icon icon={thumbsdownIcon} fontSize={18} />
                 </Button>
               </div>
             </div>
