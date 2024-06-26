@@ -219,6 +219,18 @@ const Chat = () => {
             </svg>
           </button>
         </div>
+        <div className="text-center my-4">
+          <div className="avatar">
+            <div className="w-16 rounded-full">
+              <img
+                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+                alt="Tailwind-CSS-Avatar-component"
+              />
+            </div>
+          </div>
+          <p className="text-md font-medium">Name</p>
+          <p className="text-sm text-gray-500">Hi, how may I help you.</p>
+        </div>
         <ScrollArea
           className="pl-5 pr-5 pb-5 overflow-auto w-full h-full"
           // style={{ height: "calc(100vh)" }}
